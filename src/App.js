@@ -3,16 +3,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import { increment, decrement, checkLog, add, remove, loadCategories, loadJokes } from './actions';
 import Select from 'react-select';
 import axios from 'axios';
+import Loader from './images/loader.svg'
 
 
 
 
 function App() {
-  const [category, setCategories] = useState([{
-    label: 'animal',
-    value: 'animal'
-  }]);
-  const [todo, setTodo] = useState();
+  const [category, setCategories] = useState([]);
+  const [loader, setLoader] = useState(true);
   { console.log(category + " VALUE") }
   //const counter = useSelector((state) => state.counter.count);
   // const login = useSelector((state) => state.isLogged.isLogged);
@@ -47,6 +45,8 @@ function App() {
 
     axios.request(options).then(function (response) {
       dispatch(loadCategories((response.data)))
+      setLoader(false);
+
       //  console.log(response.data);
     }).catch(function (error) {
       console.error(error);
@@ -58,7 +58,7 @@ function App() {
     var options = {
       method: 'GET',
       url: 'https://matchilling-chuck-norris-jokes-v1.p.rapidapi.com/jokes/random',
-      params: { category: category},
+      params: { category: category },
       headers: {
         accept: 'application/json',
         'x-rapidapi-host': 'matchilling-chuck-norris-jokes-v1.p.rapidapi.com',
@@ -75,65 +75,36 @@ function App() {
   }, [category])
 
   return (
+
+
     <div className="App">
-      <div className="options">
-        <Select
-          name="colors"
-          options={categories}
-          className="basic-multi-select"
-          classNamePrefix="select"
-          onChange={(e) => setCategories(e.value)}
-        />
-
-
-      </div>
-      <div>
-        <ul>
-          {jokes ?
-         jokes.map((joke) =>
-          <li key={joke.id} >{joke.value}</li>
-        )
-        
-        : null}
-      </ul>
-    </div>
-
-      {/* {login ? (
+      {loader ? (
         <div>
-          <h1>Counter {counter}</h1>
-          <button onClick={() => dispatch(increment(5))}>+</button>
-          <button onClick={() => dispatch(decrement(3))}>-</button>
+          <div className="options">
+            <Select
+              name="colors"
+              options={categories}
+              className="basic-multi-select"
+              classNamePrefix="select"
+              onChange={(e) => setCategories(e.value)}
+            />
+
+
+          </div>
+          <div>
+            <ul>
+              {jokes ?
+                jokes.map((joke) =>
+                  <li key={joke.id} >{joke.value}</li>
+                )
+                : null}
+            </ul>
+          </div>
         </div>
-      ) :
-        (
-          <h2>Your are not Logged in</h2>
-
-        )
-      } }
-      <button onClick={() => dispatch(checkLog())}>LogOut</button>
-      {/* <button onClick={() => setToggle(!toggle)}>LogOut</button> */}
-  {/* 
-      <div>
-
-        <input type="text" value={todo} placeholder="Add todo" onChange={(e) => handleChange(e)} />
-        <button onClick={() => {
-          dispatch(add({
-            name: todo,
-            id: Math.floor(Math.random() * 1000)
-          }))
-          setTodo('');
-        }}>Add Todo</button>
-
-        <div>
-
-          <ul>
-            {list.map((todo) =>
-              <li key={todo.id} onClick={() => dispatch(remove(todo.id))}>{todo.name}</li>
-            )}
-          </ul>
-        </div>
-
-      </div> */}
+          ) : (
+          <img src={Loader} />
+          )
+        }
     </div >
   );
 }

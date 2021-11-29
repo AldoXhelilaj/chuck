@@ -1,10 +1,7 @@
 //reducer
 const initialState = [{
 
-    categories: [{
-        value: '',
-        label: '',
-    }],
+    categories: [],
 
     jokes:{}
 }]
