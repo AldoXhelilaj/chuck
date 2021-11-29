@@ -3,7 +3,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { increment, decrement, checkLog, add, remove, loadCategories, loadJokes } from './actions';
 import Select from 'react-select';
 import axios from 'axios';
-import Loader from './images/loader.svg'
+import Loader from './images/loader01.svg'
+import Chuck from './images/chuck.png'
+
 
 
 
@@ -11,24 +13,17 @@ import Loader from './images/loader.svg'
 function App() {
   const [category, setCategories] = useState([]);
   const [loader, setLoader] = useState(true);
+  { console.log(loader + " LOADER") }
   { console.log(category + " VALUE") }
-  //const counter = useSelector((state) => state.counter.count);
-  // const login = useSelector((state) => state.isLogged.isLogged);
-  // const list = useSelector(({ todo }) => todo.list);
   const categories = useSelector((categories) => categories.categories.categories);
   const jokes = useSelector((state) => state.categories.jokes);
 
-  //  { console.log(jokes.map(c=>c.value)+" JOKES")}
+
 
 
 
 
   const dispatch = useDispatch();
-
-  //const handleChange = (e) => {
-  //   setTodo(e.target.value);
-  // };
-
 
 
   //category api
@@ -44,54 +39,71 @@ function App() {
     };
 
     axios.request(options).then(function (response) {
-      dispatch(loadCategories((response.data)))
-      setLoader(false);
 
-      //  console.log(response.data);
+      dispatch(loadCategories((response.data)))
+
     }).catch(function (error) {
       console.error(error);
     });
   }, [])
 
   //random api
+
+
   useEffect(() => {
-    var options = {
-      method: 'GET',
-      url: 'https://matchilling-chuck-norris-jokes-v1.p.rapidapi.com/jokes/random',
-      params: { category: category },
-      headers: {
-        accept: 'application/json',
-        'x-rapidapi-host': 'matchilling-chuck-norris-jokes-v1.p.rapidapi.com',
-        'x-rapidapi-key': 'e25301e04dmsh31f9c5ebf3e37a7p170819jsn9431b24db215'
-      }
-    };
+    setLoader(false);
+    if (category.length > 0) {
+      setLoader(true);
 
-    axios.request(options).then(function (response) {
-      dispatch(loadJokes(response.data))
+      var options = {
+        method: 'GET',
+        url: 'https://matchilling-chuck-norris-jokes-v1.p.rapidapi.com/jokes/random',
+        params: { category: category },
+        headers: {
+          accept: 'application/json',
+          'x-rapidapi-host': 'matchilling-chuck-norris-jokes-v1.p.rapidapi.com',
+          'x-rapidapi-key': 'e25301e04dmsh31f9c5ebf3e37a7p170819jsn9431b24db215'
+        }
+      };
 
-    }).catch(function (error) {
-      console.error(error);
-    });
+      axios.request(options).then(function (response) {
+        dispatch(loadJokes(response.data))
+
+        setLoader(false);
+
+      }).catch(function (error) {
+        console.error(error);
+      });
+
+    }
   }, [category])
+
+
 
   return (
 
 
     <div className="App">
-      {loader ? (
-        <div>
-          <div className="options">
-            <Select
-              name="colors"
-              options={categories}
-              className="basic-multi-select"
-              classNamePrefix="select"
-              onChange={(e) => setCategories(e.value)}
-            />
-
-
+      <div className="chuck">
+        <img src={Chuck} />
+      </div>
+      <div className="wrapper-chuck">
+        <div className="options">
+          <div className="labels">
+            <h2>Let’s find a joke for you!</h2>
           </div>
-          <div>
+          <Select
+            name="colors"
+            options={categories}
+            className="basic-multi-select"
+            classNamePrefix="select"
+            onChange={(e) => setCategories(e.value)}
+          />
+
+
+        </div>
+        {!loader ? (
+          <div className="facts">
             <ul>
               {jokes ?
                 jokes.map((joke) =>
@@ -99,13 +111,17 @@ function App() {
                 )
                 : null}
             </ul>
+
           </div>
-        </div>
-          ) : (
-          <img src={Loader} />
-          )
+        ) : (
+          <img className="loader" src={Loader} />
+        )
         }
-    </div >
+      </div>
+      <footer>
+        <p>© 2021 Aldo Xhelilaj</p>
+      </footer>
+    </div>
   );
 }
 
