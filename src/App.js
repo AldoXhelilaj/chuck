@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { increment, decrement, checkLog, add, remove, loadCategories, loadJokes } from './actions';
+import { loadCategories, loadJokes } from './actions';
 import Select from 'react-select';
 import axios from 'axios';
 import Loader from './images/loader01.svg'
@@ -13,18 +13,11 @@ import Chuck from './images/chuck.png'
 function App() {
   const [category, setCategories] = useState([]);
   const [loader, setLoader] = useState(true);
-  { console.log(loader + " LOADER") }
-  { console.log(category + " VALUE") }
   const categories = useSelector((categories) => categories.categories.categories);
   const jokes = useSelector((state) => state.categories.jokes);
 
 
-
-
-
-
   const dispatch = useDispatch();
-
 
   //category api
   useEffect(() => {
@@ -48,8 +41,6 @@ function App() {
   }, [])
 
   //random api
-
-
   useEffect(() => {
     setLoader(false);
     if (category.length > 0) {
