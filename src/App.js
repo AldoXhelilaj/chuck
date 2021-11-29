@@ -9,27 +9,27 @@ import axios from 'axios';
 
 function App() {
   const [category, setCategories] = useState([{
-    label: "career",
-    value: "career"
+    label: 'animal',
+    value: 'animal'
   }]);
   const [todo, setTodo] = useState();
-  { console.log(category[0].value+" VALUE") }
+  { console.log(category + " VALUE") }
   //const counter = useSelector((state) => state.counter.count);
   // const login = useSelector((state) => state.isLogged.isLogged);
   // const list = useSelector(({ todo }) => todo.list);
   const categories = useSelector((categories) => categories.categories.categories);
-  const jokes = useSelector((state) => console.log(state.categories.jokes));
+  const jokes = useSelector((state) => state.categories.jokes);
 
- { console.log(jokes+" JOKES")}
+  //  { console.log(jokes.map(c=>c.value)+" JOKES")}
 
 
 
 
   const dispatch = useDispatch();
 
-  const handleChange = (e) => {
-    setTodo(e.target.value);
-  };
+  //const handleChange = (e) => {
+  //   setTodo(e.target.value);
+  // };
 
 
 
@@ -53,12 +53,12 @@ function App() {
     });
   }, [])
 
-//search api
+  //random api
   useEffect(() => {
     var options = {
       method: 'GET',
-      url: 'https://matchilling-chuck-norris-jokes-v1.p.rapidapi.com/jokes/search',
-      params: { query: category[0].value },
+      url: 'https://matchilling-chuck-norris-jokes-v1.p.rapidapi.com/jokes/random',
+      params: { category: category},
       headers: {
         accept: 'application/json',
         'x-rapidapi-host': 'matchilling-chuck-norris-jokes-v1.p.rapidapi.com',
@@ -67,36 +67,36 @@ function App() {
     };
 
     axios.request(options).then(function (response) {
-     dispatch(loadJokes((response.data.result)))
+      dispatch(loadJokes(response.data))
 
     }).catch(function (error) {
       console.error(error);
     });
-
-  }, [])
-
+  }, [category])
 
   return (
     <div className="App">
       <div className="options">
         <Select
-          isMulti
           name="colors"
           options={categories}
           className="basic-multi-select"
           classNamePrefix="select"
-          onChange={(e) => setCategories(e)}
+          onChange={(e) => setCategories(e.value)}
         />
 
 
       </div>
       <div>
         <ul>
-        {/* {jokes.map((jokes) =>
-              <li key={jokes.id}>{jokes.values}</li>
-            )} */}
-          </ul>
-      </div>
+          {jokes ?
+         jokes.map((joke) =>
+          <li key={joke.id} >{joke.value}</li>
+        )
+        
+        : null}
+      </ul>
+    </div>
 
       {/* {login ? (
         <div>
@@ -112,7 +112,7 @@ function App() {
       } }
       <button onClick={() => dispatch(checkLog())}>LogOut</button>
       {/* <button onClick={() => setToggle(!toggle)}>LogOut</button> */}
-      {/* 
+  {/* 
       <div>
 
         <input type="text" value={todo} placeholder="Add todo" onChange={(e) => handleChange(e)} />

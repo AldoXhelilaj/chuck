@@ -6,7 +6,7 @@ const initialState = [{
         label: '',
     }],
 
-    jokes:[]
+    jokes:{}
 }]
 const categories = (state = initialState, action) => {
 
@@ -17,13 +17,13 @@ const categories = (state = initialState, action) => {
                     categories: action.payload.map((category) => {
                         return { value: category, label: category };
                     })
-                
+
             }
 
             case 'JOKES':
                 return {
                     ...state,
-                        jokes:[...action.payload]
+                        jokes:[action.payload]
                     
                 }
 
